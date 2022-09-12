@@ -1,12 +1,30 @@
-from flask import Flask, render_template, request, make_response
+from flask import Flask, render_template, request, make_response, session, jsonify
+from datetime import datetime, timedelta
 from database import Database
+from functools import wraps
 import hashlib
 import jwt
-from datetime import datetime, timedelta
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "amit"
 cloud = Database(local=True)
+
+
+def token_required(func):
+    # decorator factory which invoks update_wrapper() method and passes decorated function as an argument
+    @wraps(func)
+    def decorated(*args, **kwargs):
+        token = request.args.get('token')
+        if not token:
+            return jsonify({'Alert!': 'Token is missing!'}), 401
+
+        try:
+            data = jwt.decode(token, app.config['SECRET_KEY'])
+        except:
+            return jsonify({'Message': 'Invalid token'}), 403
+        return func(*args, **kwargs)
+
+    return decorated
 
 
 @app.route('/login', methods=["POST", "GET"])
@@ -68,6 +86,12 @@ def login_user():
         # missing value
         else:
             return make_response('unable to verify', 403)
+
+
+@app.route('/home')
+@token_required
+def home():
+    return 'JWT is verified. Welcome to your dashboard !  '
 
 
 if __name__ == "__main__":
