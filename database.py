@@ -16,4 +16,4 @@ class Database:
         self.collection.insert_one(data)
 
     def fetch(self, uid):
-        self.collection.find_one({"_id": uid})
+        return self.collection.find_one({"_id": uid})
