@@ -11,17 +11,21 @@ cloud = Database(local=True)
 
 
 def token_required(func):
-    # decorator factory which invoks update_wrapper() method and passes decorated function as an argument
+    # decorator factory which invokes update_wrapper() method and passes decorated function as an argument
     @wraps(func)
     def decorated(*args, **kwargs):
-        token = request.args.get('token')
+        token = request.headers.get('token')
         if not token:
             return jsonify({'Alert!': 'Token is missing!'}), 401
 
         try:
-            data = jwt.decode(token, app.config['SECRET_KEY'])
-        except:
-            return jsonify({'Message': 'Invalid token'}), 403
+            decoded_token = jwt.decode(token, app.config['SECRET_KEY'], algorithms='HS256')
+        except jwt.ExpiredSignatureError:
+            error = "Access token expired. Please log in again."
+            return error
+        except jwt.InvalidTokenError:
+            error = "Invalid token. Please log in again."
+            return error
         return func(*args, **kwargs)
 
     return decorated
@@ -68,24 +72,24 @@ def login_user():
 
             # missing user in database
             if user_data is None:
-                return make_response("User not found", 404)
+                return render_template('login.html', alert="User not found")
             else:
                 cloud_hash = user_data['secret']
 
                 if user_hash == cloud_hash:
                     token = jwt.encode(
-                        payload={'user': email, 'expiry': str(datetime.utcnow() + timedelta(minutes=10))},
+                        payload={'user': email, 'created_at': str(datetime.utcnow()), 'expiry': str(datetime.utcnow() + timedelta(minutes=10))},
                         key=app.config['SECRET_KEY'])
 
-                    return token
+                    return make_response(jsonify({'token': token}), 201)
 
                 # incorrect password
                 else:
-                    return make_response('unable to verify', 400)
+                    return render_template('login.html', alert="Invalid Credentials")
 
         # missing value
         else:
-            return make_response('unable to verify', 403)
+            return render_template('login.html', alert="Email & password missing")
 
 
 @app.route('/home')

@@ -16,6 +16,13 @@
 
     <div class="main">
 
+        {% if alert %}
+        <div style=" background-color:#FF4D4D; " class="alert alert-box">
+          <h3>{{alert}}</h3>
+          <a onclick="this.parentElement.style.display='none';" class="close">&times;</a>
+        </div>
+        {% endif %}
+
         <!-- Sing in  Form -->
         <section class="sign-in">
             <div class="container">

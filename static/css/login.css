@@ -164,6 +164,47 @@ input[type=radio] {
   -o-appearance: radio !important;
   -ms-appearance: radio !important; }
 
+/* alert box css starts*/
+@font-face {
+  font-family: 'Quicksand';
+  font-style: normal;
+  font-weight: 100;
+  src: url("../fonts/Quicksand/Quicksand-Medium.ttf");}
+
+
+.alert h3{
+    font-family:Quicksand;
+}
+
+.alert{
+box-sizing: border-box;
+  color: white;
+  width:30%;
+  margin:0px;
+  padding:30px;
+  position:absolute;
+  right:20px;
+  top:20px;
+  border-radius:15px;
+  box-shadow:0 0 15px 5px #ccc;
+}
+.alert .close{
+  position:absolute;
+  width:30px;
+  height:30px;
+  opacity:0.5;
+  border-width:1px;
+  border-style:solid;
+  border-radius:50%;
+  right:15px;
+  top:25px;
+  text-align:center;
+  font-size:2.6em;
+  cursor:pointer;
+}
+/* alert box css ends */
+
+
 img {
   max-width: 100%;
   height: auto; }
