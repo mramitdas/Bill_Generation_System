@@ -95,7 +95,8 @@ def login_user():
 
                 if user_hash == cloud_hash:
                     token = jwt.encode(
-                        payload={'user': email, 'created_at': str(datetime.utcnow()), 'expiry': str(datetime.utcnow() + timedelta(minutes=10))},
+                        payload={'user': email, 'created_at': str(datetime.utcnow()),
+                                 'expiry': str(datetime.utcnow() + timedelta(minutes=10))},
                         key=app.config['SECRET_KEY'])
 
                     return make_response(jsonify({'token': token}), 201)
@@ -113,6 +114,11 @@ def login_user():
 @token_required
 def home():
     return 'JWT is verified. Welcome to your dashboard !  '
+
+
+@app.route('/dash', methods=["POST", "GET"])
+def dash():
+    return render_template('dashboard.html')
 
 
 if __name__ == "__main__":
