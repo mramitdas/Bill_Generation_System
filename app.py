@@ -46,16 +46,33 @@ def register_user():
     if request.method == "POST":
         data = request.form
 
-        name = data['name']
-        email = data['email']
-        password = data['pass']
+        if {'name', 'email', 'pass', 're_pass'}.issubset(data.keys()):
+            name = data['name']
+            email = data['email']
+            password = data['pass']
+            re_password = data['re_pass']
 
-        cloud.insertion({"name": name,
-                         "_id": email,
-                         "secret": hashlib.sha256(password.encode('utf-8')).hexdigest(),
-                         "auth": "admin"})
+            user_data = cloud.fetch(email)
 
-        return render_template('register.html')
+            if user_data is None and password == re_password:
+                cloud.insertion({"name": name,
+                                 "_id": email,
+                                 "secret": hashlib.sha256(password.encode('utf-8')).hexdigest(),
+                                 "auth": "admin"})
+
+                return render_template('login.html', success="Registration successful")
+
+            # if user already registered
+            elif user_data is not None:
+                return render_template('register.html', error="User already registered")
+
+            # password does not match
+            elif password != re_password:
+                return render_template('register.html', error="Password doesn't match")
+
+        # missing value
+        else:
+            return render_template('register.html', error="Information required")
 
 
 @app.route('/login_user', methods=["POST", "GET"])
