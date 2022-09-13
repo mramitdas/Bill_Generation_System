@@ -16,9 +16,16 @@
 
     <div class="main">
 
-        {% if alert %}
+        {% if error %}
         <div style=" background-color:#FF4D4D; " class="alert alert-box">
-          <h3>{{alert}}</h3>
+          <h3>{{error}}</h3>
+          <a onclick="this.parentElement.style.display='none';" class="close">&times;</a>
+        </div>
+        {% endif %}
+
+        {% if success %}
+        <div style=" background-color:#FF4D4D; " class="alert alert-box">
+          <h3>{{success}}</h3>
           <a onclick="this.parentElement.style.display='none';" class="close">&times;</a>
         </div>
         {% endif %}

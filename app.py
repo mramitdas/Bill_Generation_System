@@ -72,7 +72,7 @@ def login_user():
 
             # missing user in database
             if user_data is None:
-                return render_template('login.html', alert="User not found")
+                return render_template('login.html', error="User not found")
             else:
                 cloud_hash = user_data['secret']
 
@@ -85,11 +85,11 @@ def login_user():
 
                 # incorrect password
                 else:
-                    return render_template('login.html', alert="Invalid Credentials")
+                    return render_template('login.html', error="Invalid Credentials")
 
         # missing value
         else:
-            return render_template('login.html', alert="Email & password missing")
+            return render_template('login.html', error="Email & password missing")
 
 
 @app.route('/home')
