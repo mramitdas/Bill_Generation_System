@@ -99,7 +99,7 @@ def login_user():
                                  'expiry': str(datetime.utcnow() + timedelta(minutes=10))},
                         key=app.config['SECRET_KEY'])
 
-                    return make_response(jsonify({'token': token}), 201)
+                    return render_template('dashboard.html', name=user_data['name'])
 
                 # incorrect password
                 else:
